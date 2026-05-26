@@ -30,7 +30,7 @@ export default function Projects() {
       {/* Heading */}
       <div className="relative z-10 mx-auto max-w-6xl">
         <h2 className="mb-4 text-center text-4xl font-extrabold tracking-wide md:text-5xl">
-          Geometric Projects
+          Geometric Projects Section
         </h2>
 
         <p className="mx-auto mb-14 max-w-2xl text-center text-gray-400">
