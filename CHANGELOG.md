@@ -1,3 +1,80 @@
+# [1.28.0](https://github.com/anurag3407/career-pilot/compare/v1.27.0...v1.28.0) (2026-05-26)
+
+
+### Features
+
+* add validation for missing AI API environment variables ([32f6a23](https://github.com/anurag3407/career-pilot/commit/32f6a231b92335938ea178b35fd201badae8c019))
+
+# [1.27.0](https://github.com/anurag3407/career-pilot/compare/v1.26.0...v1.27.0) (2026-05-26)
+
+
+### Features
+
+* **portfolio:** build complete Pinterest Masonry portfolio template ([788b385](https://github.com/anurag3407/career-pilot/commit/788b385e4a9ad0ebb9b078c9a8707be9611c7f8e))
+
+# [1.26.0](https://github.com/anurag3407/career-pilot/compare/v1.25.0...v1.26.0) (2026-05-26)
+
+
+### Features
+
+* **jobs:** add Clear All Filters button to job search sidebar ([#1810](https://github.com/anurag3407/career-pilot/issues/1810)) ([fc848b9](https://github.com/anurag3407/career-pilot/commit/fc848b9ad320a678be4a6dc1954365e8807ed348))
+
+# [1.25.0](https://github.com/anurag3407/career-pilot/compare/v1.24.0...v1.25.0) (2026-05-26)
+
+
+### Features
+
+* **portfolio:** implement Netflix Browse complete portfolio template ([b6fc3e8](https://github.com/anurag3407/career-pilot/commit/b6fc3e881ca238fb2ef6ec770206367abdfe34d4))
+* **portfolio:** implement Projects section for Holographic Theme ([5fd5369](https://github.com/anurag3407/career-pilot/commit/5fd5369335c94b66220d610bcca593e022e8fc41))
+
+# [1.24.0](https://github.com/anurag3407/career-pilot/compare/v1.23.0...v1.24.0) (2026-05-26)
+
+
+### Bug Fixes
+
+* clean up template gallery tags and import geometric preview ([8be4a1b](https://github.com/anurag3407/career-pilot/commit/8be4a1b3753e21d1090c71b4dbc70790d1a71e46))
+* clean up template gallery tags and import geometric preview ([e29a54a](https://github.com/anurag3407/career-pilot/commit/e29a54a867d9c7e6ea7e03a40f6e5314a39b97bb))
+
+
+### Features
+
+* **Holographic:** implement About section with premium 3D cyber-glass aesthetic ([17d4c71](https://github.com/anurag3407/career-pilot/commit/17d4c715e160ad3431a849c8bd567866d1b8be07))
+
+# [1.23.0](https://github.com/anurag3407/career-pilot/compare/v1.22.1...v1.23.0) (2026-05-26)
+
+
+### Features
+
+* add Glitch Reveal portfolio template ([62a03e8](https://github.com/anurag3407/career-pilot/commit/62a03e8fddd8af669acdaaa012b514b3f7a1cb57))
+
+## [1.22.1](https://github.com/anurag3407/career-pilot/compare/v1.22.0...v1.22.1) (2026-05-26)
+
+
+### Bug Fixes
+
+* **usePresence:** deduplicate userIds and clarify eslint-disable comment ([919482d](https://github.com/anurag3407/career-pilot/commit/919482de962742a4a2bdeafab4d978f1f5ca4acb))
+
+# [1.22.0](https://github.com/anurag3407/career-pilot/compare/v1.21.0...v1.22.0) (2026-05-26)
+
+
+### Features
+
+* **portfolio/twitter:** implement Twitter Profile portfolio template ([#1908](https://github.com/anurag3407/career-pilot/issues/1908)) ([a69f1a3](https://github.com/anurag3407/career-pilot/commit/a69f1a324db778deb9bede6e7621bf9a2e218b1d))
+
+# [1.21.0](https://github.com/anurag3407/career-pilot/compare/v1.20.0...v1.21.0) (2026-05-26)
+
+
+### Bug Fixes
+
+* address bot review comments on Choose Adventure template ([85db54a](https://github.com/anurag3407/career-pilot/commit/85db54a9e0eab0d4d1f01dfe7b9fb98297fe0111))
+* remove spurious stub code appended during rebase merge ([2a9b461](https://github.com/anurag3407/career-pilot/commit/2a9b461cabb1cedf88cba30f124e69b4b9aae644))
+* restore dummy_data.json corrupted by rebase merge ([5a56418](https://github.com/anurag3407/career-pilot/commit/5a56418b0016ed275ede695ae7c96e29a9258453))
+
+
+### Features
+
+* add Choose Adventure interactive portfolio template ([72d26b4](https://github.com/anurag3407/career-pilot/commit/72d26b46cbe3d31e1727fa765eec5e8675f7f6de))
+
 # [1.20.0](https://github.com/anurag3407/career-pilot/compare/v1.19.0...v1.20.0) (2026-05-26)
 
 
