@@ -3,13 +3,11 @@ import { SprayCan, Brush, ArrowRight, Star, Zap, Palette } from 'lucide-react';
 
 export default function Hero() {
   // For demo/preview purposes, just show an alert when clicked
-  const handleExploreClick = (e) => {
-    e.preventDefault();
+  const handleExploreClick = () => {
     alert('🚀 This is a preview! In the full template, this would scroll to your portfolio section.');
   };
 
-  const handleContactClick = (e) => {
-    e.preventDefault();
+  const handleContactClick = () => {
     alert('📧 This is a preview! In the full template, this would scroll to the contact section.');
   };
 
@@ -57,14 +55,14 @@ export default function Hero() {
           <span className="block text-5xl text-white drop-shadow-lg md:text-7xl lg:text-8xl">
             CREATE YOUR
           </span>
-          <div className="relative mt-4 inline-block">
+          <span className="relative mt-4 inline-block">
             <span className="absolute inset-0 -rotate-3 transform bg-gradient-to-r from-pink-500 via-yellow-500 to-green-500 bg-clip-text text-5xl text-transparent blur-sm md:text-7xl lg:text-8xl">
               MASTERPIECE
             </span>
             <span className="relative -rotate-3 bg-gradient-to-r from-pink-500 via-yellow-500 to-green-500 bg-clip-text text-5xl font-black text-transparent md:text-7xl lg:text-8xl">
               MASTERPIECE
             </span>
-          </div>
+          </span>
         </h1>
 
         {/* Description */}
@@ -73,32 +71,28 @@ export default function Hero() {
           your portfolio starts here. Let your creativity run wild.
         </p>
 
-        {/* CTA Buttons - FIXED with proper anchor tags */}
+        {/* CTA Buttons */}
         <div className="mt-12 flex flex-col gap-4 sm:flex-row">
           {/* Primary CTA */}
-          <a
-            href="#"
+          <button
             onClick={handleExploreClick}
             className="group relative inline-flex cursor-pointer items-center overflow-hidden rounded-full bg-gradient-to-r from-pink-500 to-yellow-500 px-8 py-3 font-bold text-white transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-pink-500/50"
-            role="button"
             aria-label="Explore portfolio work"
           >
             <span className="relative z-10 flex items-center gap-2">
               Start Creating <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </span>
-          </a>
+          </button>
           
           {/* Secondary CTA */}
-          <a
-            href="#"
+          <button
             onClick={handleContactClick}
             className="inline-flex cursor-pointer items-center gap-2 rounded-full border-2 border-white/30 bg-transparent px-8 py-3 font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:border-pink-400 hover:bg-white/10"
-            role="button"
             aria-label="Contact me"
           >
             <Brush className="h-5 w-5" />
             Contact Me
-          </a>
+          </button>
         </div>
 
         {/* Stats with icons */}
