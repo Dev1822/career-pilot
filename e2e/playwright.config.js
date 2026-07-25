@@ -22,7 +22,7 @@ export default defineConfig({
     url: 'http://127.0.0.1:5173',
     reuseExistingServer: !process.env.CI,
     env: {
-      VITE_CLERK_PUBLISHABLE_KEY: 'pk_test_ZHVtbXktY2xlcmstcHVibGlzaGFibGUta2V5JA'
+      VITE_CLERK_PUBLISHABLE_KEY: process.env.VITE_CLERK_PUBLISHABLE_KEY || ''
     }
   },
 });

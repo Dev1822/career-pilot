@@ -8,8 +8,12 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
     - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
@@ -24,10 +28,10 @@ jobs:
     - name: Run Playwright tests
       run: npm run test:e2e
       env:
-        # Pass test credentials as environment variables if needed
-        # E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
-        # E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
         CI: true
+        VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
+        E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
+        E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
     - uses: actions/upload-artifact@v4
       if: always()
       with:
