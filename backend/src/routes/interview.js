@@ -14,6 +14,7 @@ import {
     transcribeAudio,
     runCodeAgainstTests
 } from '../services/interviewService.js';
+import { aiRateLimiter } from '../middleware/rateLimiter.js';
 import { validate } from '../middleware/validate.js';
 import {
     startInterviewSchema,
@@ -99,7 +100,7 @@ const buildInterviewAnalytics = async (uid) => {
 // ---------------------------------------------------------------------------
 // POST /api/interview/start
 // ---------------------------------------------------------------------------
-router.post('/start', verifyToken, extractAIProvider, validate(startInterviewSchema), asyncHandler(async (req, res) => {
+router.post('/start', verifyToken, extractAIProvider, asyncHandler(async (req, res) => {
     const {
         jobRole,
         industry,
@@ -212,7 +213,8 @@ router.post(
     '/transcribe',
     verifyToken,
     extractAIProvider,
-      audioUpload.single('audio'),
+    aiRateLimiter,
+    audioUpload.single('audio'),
     asyncHandler(async (req, res) => {
         if (!req.file) {
             throw new ApiError(400, 'audio file is required');
@@ -246,7 +248,8 @@ router.post(
     '/:id([0-9a-fA-F]{24})/answer',
     verifyToken,
     extractAIProvider,
-      audioUpload.single('audio'),
+    aiRateLimiter,
+    audioUpload.single('audio'),
     asyncHandler(async (req, res) => {
         const { id } = req.params;
         // Body is multipart — fields are strings; coerce & validate manually

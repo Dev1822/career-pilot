@@ -288,7 +288,7 @@ app.use('/api/job-alerts', jobAlertRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api/fellowship', fellowshipRoutes);
 app.use('/api/interview', interviewRoutes);
-app.use("/api/upload", inputRoutes);
+app.use("/api/upload", strictLimiter, inputRoutes);
 app.use("/api/recruiter", recruiterRoutes);
 app.use("/api/outreach", outreachRoutes);
 app.use("/api/bugs", bugsRoutes);
