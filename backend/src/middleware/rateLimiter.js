@@ -1,78 +1,71 @@
 import rateLimit from 'express-rate-limit';
+import RedisStore from 'rate-limit-redis';
 import Redis from 'ioredis';
 
-const DAILY_LIMIT = 20;
-const WINDOW_MS = 24 * 60 * 60 * 1000;
-
-// Redis store for express-rate-limit using the ioredis client already in the project.
-// Limits survive server restarts when REDIS_URL is configured.
-class RedisStore {
-  constructor(client, windowMs) {
-    this.client = client;
-    this.windowSecs = Math.ceil(windowMs / 1000);
-    this.prefix = 'ai_rl:';
-  }
-
-  async increment(key) {
-    const redisKey = this.prefix + key;
-    const pipeline = this.client.pipeline();
-    pipeline.incr(redisKey);
-    pipeline.ttl(redisKey);
-    const [[, hits], [, ttl]] = await pipeline.exec();
-
-    if (ttl < 0) {
-      await this.client.expire(redisKey, this.windowSecs);
-    }
-
-    const remainingTtl = ttl < 0 ? this.windowSecs : ttl;
-    return {
-      totalHits: Number(hits) || 1,
-      resetTime: new Date(Date.now() + remainingTtl * 1000)
-    };
-  }
-
-  async decrement(key) {
-    await this.client.decr(this.prefix + key);
-  }
-
-  async resetKey(key) {
-    await this.client.del(this.prefix + key);
+// Create a reusable Redis client
+let redisClient;
+if (process.env.REDIS_URL) {
+  try {
+    redisClient = new Redis(process.env.REDIS_URL, { lazyConnect: true, enableOfflineQueue: false });
+    redisClient.on('error', (err) => console.warn('Rate limiter Redis error:', err.message));
+  } catch (err) {
+    console.warn('Rate limiter: could not connect to Redis, using in-memory store:', err.message);
   }
 }
 
-const buildStore = () => {
-  if (!process.env.REDIS_URL) return undefined; // falls back to express-rate-limit in-memory store
+// Helper to create the store (falls back to memory if Redis is unavailable)
+const buildStore = (prefix = 'rl:') => {
+  if (!redisClient) return undefined;
 
-  try {
-    const client = new Redis(process.env.REDIS_URL, { lazyConnect: true, enableOfflineQueue: false });
-    client.on('error', (err) => console.warn('Rate limiter Redis error:', err.message));
-    return new RedisStore(client, WINDOW_MS);
-  } catch {
-    console.warn('Rate limiter: could not connect to Redis, using in-memory store');
-    return undefined;
-  }
+  return new RedisStore({
+    sendCommand: (...args) => redisClient.call(...args),
+    prefix,
+  });
 };
 
-export const aiRateLimiter = rateLimit({
-  windowMs: WINDOW_MS,
-  max: DAILY_LIMIT,
-  keyGenerator: (req) => req.user?.uid || req.ip,
-  store: buildStore(),
-  standardHeaders: true,
-  legacyHeaders: true,
-  handler: (req, res, next, options) => {
-    const reset = res.getHeader('X-RateLimit-Reset') || res.getHeader('RateLimit-Reset');
-    const resetAt = reset ? new Date(Number(reset) * 1000).toISOString() : null;
+const keyGenerator = (req) => req.user?.uid || req.ip;
 
+// Global Limiter: 100 requests per 15 minutes
+export const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  store: buildStore('rl:'),
+  keyGenerator: (req) => req.ip, // Global limits generally by IP
+  handler: (req, res, next, options) => {
     res.status(429).json({
       success: false,
-      error: 'Daily limit reached',
-      limit: DAILY_LIMIT,
-      remaining: 0,
-      resetAt
+      error: options.message?.error || 'Rate limit exceeded',
+      message: options.message
     });
   },
-// Skip limiting only when the user supplies their own API key (they pay for their own quota).
-// Do NOT skip unauthenticated requests — they must still be rate-limited by IP.
+  message: {
+    error: 'Too many requests, please try again later.'
+  }
+});
+
+// Strict Limiter (AI/Upload): 5 requests per 15 minutes
+export const strictLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  store: buildStore('ai_rl:'),
+  keyGenerator, // Strict limits by user ID (if auth) or IP
+  handler: (req, res, next, options) => {
+    res.status(429).json({
+      success: false,
+      error: 'Rate limit exceeded for AI/Upload endpoints',
+      limit: options.max,
+      message: {
+          error: 'Too many requests to high-cost endpoints, please try again later.'
+      }
+    });
+  },
+  // Skip limiting only when the user supplies their own API key (they pay for their own quota).
+  // Do NOT skip unauthenticated requests — they must still be rate-limited by IP.
   skip: (req) => req.aiProviderSource === 'user_header' || req.aiProviderSource === 'user_openrouter_pkce'
 });
+
+export const aiRateLimiter = strictLimiter;

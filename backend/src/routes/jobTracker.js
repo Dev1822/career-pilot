@@ -2,7 +2,6 @@ import express from 'express';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { extractAIProvider } from '../middleware/aiKey.js';
-import { aiRateLimiter } from '../middleware/rateLimiter.js';
 import TrackedJob from '../models/TrackedJob.model.js';
 import { researchCompany } from '../services/companyResearchService.js';
 import { validate } from '../middleware/validate.js';
@@ -24,7 +23,7 @@ function isValidWebUrl(str) {
 const router = express.Router();
 
 // Research a company using AI
-router.post('/research', verifyToken, extractAIProvider, aiRateLimiter, validate(companyResearchSchema), asyncHandler(async (req, res) => {
+router.post('/research', verifyToken, extractAIProvider, validate(companyResearchSchema), asyncHandler(async (req, res) => {
   const { companyName, industry } = req.body;
 
   if (!companyName || !companyName.trim()) {

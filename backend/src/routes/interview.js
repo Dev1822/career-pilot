@@ -14,7 +14,6 @@ import {
     transcribeAudio,
     runCodeAgainstTests
 } from '../services/interviewService.js';
-import { aiRateLimiter } from '../middleware/rateLimiter.js';
 import { validate } from '../middleware/validate.js';
 import {
     startInterviewSchema,
@@ -100,7 +99,7 @@ const buildInterviewAnalytics = async (uid) => {
 // ---------------------------------------------------------------------------
 // POST /api/interview/start
 // ---------------------------------------------------------------------------
-router.post('/start', verifyToken, extractAIProvider, aiRateLimiter, validate(startInterviewSchema), asyncHandler(async (req, res) => {
+router.post('/start', verifyToken, extractAIProvider, validate(startInterviewSchema), asyncHandler(async (req, res) => {
     const {
         jobRole,
         industry,
@@ -197,7 +196,7 @@ router.post('/start', verifyToken, extractAIProvider, aiRateLimiter, validate(st
 // ---------------------------------------------------------------------------
 // POST /api/interview/warmup-questions
 // ---------------------------------------------------------------------------
-router.post('/warmup-questions', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/warmup-questions', verifyToken, extractAIProvider, asyncHandler(async (req, res) => {
     const { jobRole = 'this role', industry = 'technology', language = 'en' } = req.body || {};
     const questions = await generateWarmupQuestions(
         { jobRole, industry, language },
@@ -213,8 +212,7 @@ router.post(
     '/transcribe',
     verifyToken,
     extractAIProvider,
-    aiRateLimiter,
-    audioUpload.single('audio'),
+      audioUpload.single('audio'),
     asyncHandler(async (req, res) => {
         if (!req.file) {
             throw new ApiError(400, 'audio file is required');
@@ -248,8 +246,7 @@ router.post(
     '/:id([0-9a-fA-F]{24})/answer',
     verifyToken,
     extractAIProvider,
-    aiRateLimiter,
-    audioUpload.single('audio'),
+      audioUpload.single('audio'),
     asyncHandler(async (req, res) => {
         const { id } = req.params;
         // Body is multipart — fields are strings; coerce & validate manually
@@ -403,7 +400,7 @@ router.post('/:id([0-9a-fA-F]{24})/annotate/:answerId', verifyToken, validate(an
 // ---------------------------------------------------------------------------
 // POST /api/interview/:id/run-code
 // ---------------------------------------------------------------------------
-router.post('/:id([0-9a-fA-F]{24})/run-code', verifyToken, extractAIProvider, aiRateLimiter, validate(runCodeSchema), asyncHandler(async (req, res) => {
+router.post('/:id([0-9a-fA-F]{24})/run-code', verifyToken, extractAIProvider, validate(runCodeSchema), asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { code, language, problemId } = req.body;
 
@@ -432,7 +429,7 @@ router.post('/:id([0-9a-fA-F]{24})/run-code', verifyToken, extractAIProvider, ai
 // ---------------------------------------------------------------------------
 // POST /api/interview/:id/switch-provider
 // ---------------------------------------------------------------------------
-router.post('/:id([0-9a-fA-F]{24})/switch-provider', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/:id([0-9a-fA-F]{24})/switch-provider', verifyToken, extractAIProvider, asyncHandler(async (req, res) => {
     const { id } = req.params;
     const interview = await Interview.findOne({ _id: id, odId: req.user.uid });
     if (!interview) throw new ApiError(404, 'Interview not found');
@@ -487,7 +484,7 @@ router.post('/:id([0-9a-fA-F]{24})/switch-provider', verifyToken, extractAIProvi
 // ---------------------------------------------------------------------------
 // POST /api/interview/:id/complete
 // ---------------------------------------------------------------------------
-router.post('/:id([0-9a-fA-F]{24})/complete', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/:id([0-9a-fA-F]{24})/complete', verifyToken, extractAIProvider, asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     const interview = await Interview.findOne({ _id: id, odId: req.user.uid });
