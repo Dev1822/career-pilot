@@ -38,7 +38,6 @@ export const globalLimiter = (req, res, next) => {
       standardHeaders: true,
       legacyHeaders: false,
       store: buildStore('rl:'),
-      keyGenerator: (req) => req.ip, // Global limits generally by IP
       handler: (req, res, next, options) => {
         res.status(429).json({
           success: false,
@@ -63,6 +62,7 @@ export const strictLimiter = (req, res, next) => {
       standardHeaders: true,
       legacyHeaders: false,
       store: buildStore('ai_rl:'),
+      validate: { ip: false }, // Disable IPv6 validation to allow fallback to req.ip
       keyGenerator, // Strict limits by user ID (if auth) or IP
       handler: (req, res, next, options) => {
         res.status(429).json({
